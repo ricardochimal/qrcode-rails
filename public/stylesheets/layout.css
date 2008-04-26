@@ -40,6 +40,20 @@ body {
 	clear:both; 
 }
 
+.error {
+	color: red;
+}
+
+div.error {
+	border-left: red solid 10px;
+	padding: 10px;
+}
+
+p#bm_link {
+	padding-left: 20px;
+	font-size: 20px;
+}
+
 /*--------------------------------------------------------------
  Sidebar Alignment: you can have left or right
  --------------------------------------------------------------*/

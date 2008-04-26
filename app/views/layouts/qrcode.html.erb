@@ -7,7 +7,7 @@
 
 <body id="container">
 	<div id="header">
-		<h1>Rails QRCode Generator</h1>
+		<h1><%= link_to_unless_current 'Rails QRCode Generator', '/' %></h1>
 	</div>
 	
 	<div id="content">
@@ -15,25 +15,18 @@
 	</div>
 	
 	<div id="sidebar">
-		<div id="bookmark">
-		<h3>Create QRCode in your browser</h3>
-		<p>Click and drag the following link to your links toolbar.</p>
-		<p><a title="create QRCode to current link" href="javascript:void(location.href='<%= url_for(:only_path => false, :controller => :qrcode, :action => :create) %>?msg='+location.href)">QRCode!</a></p>
-		</div>
-		
-		<div id="qrcode">
-			<%= render :partial => 'qrcode/qrcode' %>
-		</div>
+		<%= yield :sidebar %>
 	</div>
 	
 	<div id="footer">
-			Created with 
+			Powered by
 			<%=link_to "rQRCode", "http://whomwah.com/2008/02/24/rqrcode-a-ruby-library-for-encoding-qr-codes" %>,
 			<%= link_to "RMagick", "http://rmagick.rubyforge.org/" %>,
+			<%= link_to "Heroku", "http://heroku.com/" %> and
 			<%= link_to "Ruby on Rails", "http://www.rubyonrails.org/" %><br/>
-			
+
 			Template from <%= link_to "Typo (Scribbish)", "http://www.typosphere.org/" %><br/>
-			
+
 			Brought to you by Francis Chong @ <%= link_to "Reality", "http://www.reality.hk/" %>
 	</div>
 </body>
