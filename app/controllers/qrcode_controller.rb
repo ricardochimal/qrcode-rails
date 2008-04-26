@@ -11,10 +11,12 @@ class QrcodeController < ApplicationController
     @advance = params[:advance]
     
     @qrurl = @msg
-    @filename = Digest::MD5.hexdigest("#{@version}-#{@ecc}-#{@msg}")    
-    @imgurl = "#{request.protocol}#{request.host}:#{request.port}#{request.relative_url_root}#{QRCODE_BASE_URL}/#{@filename}.png"             
+    @filename = Digest::MD5.hexdigest("#{@version}-#{@ecc}-#{@msg}")
     fullpath = "#{QRCODE_BASE_PATH}/#{@filename}.png"
-
+    
+    @imgurl = "#{request.protocol}#{request.host}:#{request.port}#{request.relative_url_root}#{QRCODE_BASE_URL}/#{@filename}.png"
+    @imgurl = "#{request.protocol}#{request.host}#{request.relative_url_root}#{QRCODE_BASE_URL}/#{@filename}.png" if request.protocol == 80
+        
     unless File.exists?(fullpath)
       logger.info "create qrcode #{fullpath}"
       qrcode = RQRCode::QRCode.new(@msg, :size => @version, :level => @ecc)
@@ -39,8 +41,9 @@ class QrcodeController < ApplicationController
     @msg = params[:msg]
     
     @qrurl = @msg
-    @filename = Digest::MD5.hexdigest("#{@version}-#{@ecc}-#{@msg}")
-    @imgurl = "#{request.protocol}#{request.host}:#{request.port}#{request.relative_url_root}#{QRCODE_BASE_URL}/#{@filename}.png"      
+    @filename = Digest::MD5.hexdigest("#{@version}-#{@ecc}-#{@msg}")    
+    @imgurl = "#{request.protocol}#{request.host}:#{request.port}#{request.relative_url_root}#{QRCODE_BASE_URL}/#{@filename}.png"
+    @imgurl = "#{request.protocol}#{request.host}#{request.relative_url_root}#{QRCODE_BASE_URL}/#{@filename}.png" if request.protocol == 80
     @advance = true
     
     render :action => :help
@@ -55,8 +58,8 @@ class QrcodeController < ApplicationController
     def default_qrurl
       @createurl = url_for(:only_path => false, :controller => :qrcode, :action => :create)
       @qrurl = url_for(:only_path => false, :controller => :qrcode, :action => :help)
-      @advance = true
-      @imgurl = "#{@createurl}?msg=#{url_for(:only_path => false, :controller => :qrcode, :action => :help)}"
+      @advance = true 
+      @imgurl = "#{@createurl}?msg=#{@qrurl}"
     end
 
     def qrcode_err(exception)
