@@ -38,10 +38,8 @@ class QrcodeController < ApplicationController
     @msg = params[:msg]
     
     @qrurl = @msg
-    @filename = Digest::MD5.hexdigest("#{@version}-#{@ecc}-#{@msg}")    
-    @imgurl = "#{request.protocol}#{request.host}:#{request.port}#{request.relative_url_root}#{QRCODE_BASE_URL}/#{@filename}.png"
-    @imgurl = "#{request.protocol}#{request.host}#{request.relative_url_root}#{QRCODE_BASE_URL}/#{@filename}.png" if request.protocol == "80"
-    @qrurl = "#{@createurl}?version=#{@version}&ecc=#{@ecc}&msg=#{@msg}"
+    @filename = Digest::MD5.hexdigest("#{@version}-#{@ecc}-#{@msg}")
+    @imgurl = "#{@createurl}?version=#{@version}&ecc=#{@ecc}&msg=#{@msg}"
     @advance = true
     
     render :action => :help
