@@ -16,7 +16,8 @@ class QrcodeController < ApplicationController
     
     @imgurl = "#{request.protocol}#{request.host}:#{request.port}#{request.relative_url_root}#{QRCODE_BASE_URL}/#{@filename}.png"
     @imgurl = "#{request.protocol}#{request.host}#{request.relative_url_root}#{QRCODE_BASE_URL}/#{@filename}.png" if request.protocol == "80"
-        
+    @qrurl = "#{@createurl}?version=#{@version}&ecc=#{@ecc}&msg=#{@msg}"
+    
     unless File.exists?(fullpath)
       logger.info "create qrcode #{fullpath}"
       qrcode = RQRCode::QRCode.new(@msg, :size => @version, :level => @ecc)
@@ -27,7 +28,7 @@ class QrcodeController < ApplicationController
 
     if request.xhr?
       render :update do |page|
-        page.replace_html  'qrcode', :partial => 'qrcode/qrcode', :locals => {:qrurl => @msg, :imgurl => @imgurl}
+        page.replace_html  'qrcode', :partial => 'qrcode/qrcode', :locals => {:qrurl => @qrurl, :imgurl => @imgurl}
         page.visual_effect :highlight, 'qrcode'
       end
     else
@@ -44,6 +45,7 @@ class QrcodeController < ApplicationController
     @filename = Digest::MD5.hexdigest("#{@version}-#{@ecc}-#{@msg}")    
     @imgurl = "#{request.protocol}#{request.host}:#{request.port}#{request.relative_url_root}#{QRCODE_BASE_URL}/#{@filename}.png"
     @imgurl = "#{request.protocol}#{request.host}#{request.relative_url_root}#{QRCODE_BASE_URL}/#{@filename}.png" if request.protocol == "80"
+    @qrurl = "#{@createurl}?version=#{@version}&ecc=#{@ecc}&msg=#{@msg}"
     @advance = true
     
     render :action => :help
@@ -60,6 +62,7 @@ class QrcodeController < ApplicationController
       @qrurl = url_for(:only_path => false, :controller => :qrcode, :action => :help)
       @advance = true 
       @imgurl = "#{@createurl}?msg=#{@qrurl}"
+      @qrurl = @imgurl
     end
 
     def qrcode_err(exception)
