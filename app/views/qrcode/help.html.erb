@@ -2,7 +2,7 @@
 <div id="bookmark">
 <h3>Create QRCode in your browser</h3>
 <p><b>Click and drag</b> following link to your links toolbar.</p>
-<p id="bm_link"><a title="create QRCode using current link" href="javascript:void(location.href='<%= url_for(:only_path => false, :controller => :qrcode, :action => :create) %>?msg='+location.href)">QRCode!</a></p>
+<p id="bm_link"><a title="create QRCode using current link" href="javascript:void(location.href='<%= url_for(:only_path => false, :controller => :qrcode, :action => :preview) %>?msg='+location.href)">QRCode!</a></p>
 </div>
 
 <div id="qrcode">

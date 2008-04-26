@@ -10,6 +10,9 @@ class QrcodeController < ApplicationController
     @msg = params[:msg]
     @advance = params[:advance]
     
+    @qrurl = @msg
+    @imgurl = "#{@createurl}?msg=#{@msg}"
+    
     @filename = Digest::MD5.hexdigest("#{@version}-#{@ecc}-#{@msg}")      
     fullpath = "#{QRCODE_BASE_PATH}/#{@filename}.png"
     
@@ -26,6 +29,15 @@ class QrcodeController < ApplicationController
     else
       redirect_to "#{QRCODE_BASE_URL}/#{@filename}.png"
     end
+  end
+  
+  def preview
+    @msg = params[:msg]
+    @advance = true
+    @qrurl = @msg
+    @imgurl = "#{@createurl}?msg=#{@msg}"
+    
+    render :action => :help
   end
   
   def help
