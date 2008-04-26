@@ -15,7 +15,7 @@ class QrcodeController < ApplicationController
     fullpath = "#{QRCODE_BASE_PATH}/#{@filename}.png"
     
     @imgurl = "#{request.protocol}#{request.host}:#{request.port}#{request.relative_url_root}#{QRCODE_BASE_URL}/#{@filename}.png"
-    @imgurl = "#{request.protocol}#{request.host}#{request.relative_url_root}#{QRCODE_BASE_URL}/#{@filename}.png" if request.protocol == 80
+    @imgurl = "#{request.protocol}#{request.host}#{request.relative_url_root}#{QRCODE_BASE_URL}/#{@filename}.png" if request.protocol == "80"
         
     unless File.exists?(fullpath)
       logger.info "create qrcode #{fullpath}"
@@ -43,7 +43,7 @@ class QrcodeController < ApplicationController
     @qrurl = @msg
     @filename = Digest::MD5.hexdigest("#{@version}-#{@ecc}-#{@msg}")    
     @imgurl = "#{request.protocol}#{request.host}:#{request.port}#{request.relative_url_root}#{QRCODE_BASE_URL}/#{@filename}.png"
-    @imgurl = "#{request.protocol}#{request.host}#{request.relative_url_root}#{QRCODE_BASE_URL}/#{@filename}.png" if request.protocol == 80
+    @imgurl = "#{request.protocol}#{request.host}#{request.relative_url_root}#{QRCODE_BASE_URL}/#{@filename}.png" if request.protocol == "80"
     @advance = true
     
     render :action => :help
