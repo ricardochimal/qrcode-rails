@@ -7,7 +7,7 @@
 
 <body id="container">
 	<div id="header">
-		<h1>Rails QRCode Generator</h1>		
+		<h1>Rails QRCode Generator</h1>
 	</div>
 	
 	<div id="content">
@@ -21,7 +21,8 @@
 		<p><a title="create QRCode to current link" href="javascript:void(location.href='<%= url_for(:only_path => false, :controller => :qrcode, :action => :create) %>?msg='+location.href)">QRCode!</a></p>
 		</div>
 		
-		<div id="qrcode">			
+		<div id="qrcode">
+			<%= render :partial => 'qrcode/qrcode' %>
 		</div>
 	</div>
 	

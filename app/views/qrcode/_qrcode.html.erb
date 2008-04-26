@@ -1,0 +1,5 @@
+<h3>URL</h3>
+
+<input size="30" id="q_url" name="url" value="<%=h url_for(:only_path => false, :controller => :qrcode, :action => :create)  %>"></input>
+
+<img src="<%= url_for(:only_path => false, :controller => :qrcode, :action => :create) %>?msg=<%=h url_for(:only_path => false, :controller => :qrcode, :action => :create) %>"/>
