@@ -11,31 +11,37 @@ class QrcodeController < ApplicationController
     @advance = params[:advance]
     
     @qrurl = @msg
-    @imgurl = "#{@createurl}?msg=#{@msg}"
-    
-    @filename = Digest::MD5.hexdigest("#{@version}-#{@ecc}-#{@msg}")      
+    @filename = Digest::MD5.hexdigest("#{@version}-#{@ecc}-#{@msg}")    
+    @imgurl = "#{request.protocol}#{request.host}:#{request.port}#{request.relative_url_root}#{QRCODE_BASE_URL}/#{@filename}.png"             
     fullpath = "#{QRCODE_BASE_PATH}/#{@filename}.png"
-    
+
     unless File.exists?(fullpath)
+      logger.info "create qrcode #{fullpath}"
       qrcode = RQRCode::QRCode.new(@msg, :size => @version, :level => @ecc)
       qrcode.save_as_png(fullpath, 4)
+    else
+      logger.info "existing qrcode #{fullpath}"
     end
 
     if request.xhr?
       render :update do |page|
-        page.replace_html  'qrcode', :partial => 'qrcode/qrcode', :locals => {:qrurl => @msg, :imgurl => "#{QRCODE_BASE_URL}/#{@filename}.png"}
+        page.replace_html  'qrcode', :partial => 'qrcode/qrcode', :locals => {:qrurl => @msg, :imgurl => @imgurl}
         page.visual_effect :highlight, 'qrcode'
       end
     else
-      redirect_to "#{QRCODE_BASE_URL}/#{@filename}.png"
+      redirect_to @imgurl
     end
   end
   
   def preview
+    @version = params[:version].nil? ? 6 : params[:version].to_i
+    @ecc = params[:ecc].to_sym rescue :q
     @msg = params[:msg]
-    @advance = true
+    
     @qrurl = @msg
-    @imgurl = "#{@createurl}?msg=#{@msg}"
+    @filename = Digest::MD5.hexdigest("#{@version}-#{@ecc}-#{@msg}")
+    @imgurl = "#{request.protocol}#{request.host}:#{request.port}#{request.relative_url_root}#{QRCODE_BASE_URL}/#{@filename}.png"      
+    @advance = true
     
     render :action => :help
   end
@@ -49,6 +55,7 @@ class QrcodeController < ApplicationController
     def default_qrurl
       @createurl = url_for(:only_path => false, :controller => :qrcode, :action => :create)
       @qrurl = url_for(:only_path => false, :controller => :qrcode, :action => :help)
+      @advance = true
       @imgurl = "#{@createurl}?msg=#{url_for(:only_path => false, :controller => :qrcode, :action => :help)}"
     end
 
