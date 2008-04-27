@@ -1,7 +1,6 @@
 class QrcodeController < ApplicationController
-  caches_page :create 
   QRCODE_BASE_URL = '/images/qrcode'
-  QRCODE_BASE_PATH = "#{RAILS_ROOT}/tmp#{QRCODE_BASE_URL}"
+  QRCODE_BASE_PATH = "#{RAILS_ROOT}/public#{QRCODE_BASE_URL}"
   before_filter :default_qrurl
   rescue_from RQRCode::QRCodeRunTimeError, :with => :qrcode_err
     
@@ -14,18 +13,19 @@ class QrcodeController < ApplicationController
     @qrurl = @msg
     @filename = Digest::MD5.hexdigest("#{@version}-#{@ecc}-#{@msg}")
     @imgurl = "#{@createurl}?version=#{@version}&ecc=#{@ecc}&msg=#{@qrurl}"
-    
+    @qrurl = "#{request.protocol}#{request.host}#{request.relative_url_root}#{QRCODE_BASE_URL}/#{@filename}.png"
+    fullpath = "#{QRCODE_BASE_PATH}/#{@filename}.png"      
+    unless File.exists?(fullpath)
+      qrcode = RQRCode::QRCode.new(@msg, :size => @version, :level => @ecc)
+      qrcode.save_as_png(fullpath, 4)
+    end  
+          
     if request.xhr?
       render :update do |page|
         page.replace_html  'qrcode', :partial => 'qrcode/qrcode', :locals => {:qrurl => @qrurl, :imgurl => @imgurl}
         page.visual_effect :highlight, 'qrcode'
       end
-    else
-      fullpath = "#{QRCODE_BASE_PATH}/#{@filename}.png"      
-      unless File.exists?(fullpath)
-        qrcode = RQRCode::QRCode.new(@msg, :size => @version, :level => @ecc)
-        qrcode.save_as_png(fullpath, 4)
-      end      
+    else  
       send_data File.open(fullpath).read, :filename => "#{@filename}.png", 
                                           :disposition => 'inline', 
                                           :type => "image/png"
@@ -40,6 +40,7 @@ class QrcodeController < ApplicationController
     @qrurl = @msg
     @filename = Digest::MD5.hexdigest("#{@version}-#{@ecc}-#{@msg}")
     @imgurl = "#{@createurl}?version=#{@version}&ecc=#{@ecc}&msg=#{@msg}"
+    @qrurl = "#{request.protocol}#{request.host}#{request.relative_url_root}#{QRCODE_BASE_URL}/#{@filename}.png" 
     @advance = true
     
     render :action => :help

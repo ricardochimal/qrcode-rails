@@ -2,11 +2,13 @@
 <div id="bookmark">
 <h3>Create QRCode in your browser</h3>
 <p><b>Click and drag</b> following link to your links toolbar.</p>
-<p id="bm_link"><a title="create QRCode using current link" href="javascript:void(location.href='<%= url_for(:only_path => false, :controller => :qrcode, :action => :preview) %>?msg='+location.href)">QRCode!</a></p>
+<p id="bm_link">
+  <a title="Drag me to your browsers links toolbar" 
+  href="javascript:void(location.href='<%= url_for(:only_path => false, :controller => :qrcode, :action => :preview) %>?msg='+location.href)">QRCode!</a></p>
 </div>
 
 <div id="qrcode">
-	<%= render :partial => 'qrcode/qrcode', :locals => { :qrurl => @qrurl, :imgurl => @imgurl} %>
+  <%= render :partial => 'qrcode/qrcode', :locals => { :qrurl => @qrurl, :imgurl => @imgurl} %>
 </div>
 <% end %>
 
@@ -23,18 +25,18 @@
   <div><label>URL or message</lable> <br/><%= text_area_tag 'msg', @msg || url_for(:only_path => false, :controller => :qrcode, :action => :help), :rows => 10, :cols => 40 %></div>
 
   <div id="advance" style="display:<%= @advance ? 'block' : 'none' %>">
-  	<div>
-		<label>QRCode Level</lable><br/>
-		<%= select_tag('version',  "<option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option selected=\"true\">6</option><option>7</option><option>8</option><option>9</option><option>10</option>") %>
-	</div>
-  	<div>
-		<label>Error Correction Level</lable> <br/>
-		<%= select_tag('ecc', "<option>l</option><option>m</option><option selected=\"true\">q</option><option>h</option>") %>
-	</div>
+    <div>
+    <label>QRCode Level</lable><br/>
+    <%= select_tag('version',  "<option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option selected=\"true\">6</option><option>7</option><option>8</option><option>9</option><option>10</option>") %>
+  </div>
+    <div>
+    <label>Error Correction Level</lable> <br/>
+    <%= select_tag('ecc', "<option>l</option><option>m</option><option selected=\"true\">q</option><option>h</option>") %>
+  </div>
   </div>
   <div>
-		<%= submit_tag 'Generate' %> 
-		<% unless @advance %> <%= link_to 'Advance', :advance => true %> <% end %>
+    <%= submit_tag 'Generate' %> 
+    <% unless @advance %> <%= link_to 'Advance', :advance => true %> <% end %>
   </div>
 <% end -%>
 </div>
