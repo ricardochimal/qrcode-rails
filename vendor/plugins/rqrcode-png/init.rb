@@ -1,1 +1,1 @@
-require 'rqrcode-png'
+require 'rqrcode-rmagick'
