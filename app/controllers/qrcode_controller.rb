@@ -9,7 +9,8 @@ class QrcodeController < ApplicationController
     @ecc = params[:ecc].to_sym rescue :q
     @msg = params[:msg]
     @advance = params[:advance]
-    
+    session[:msg] = @msg
+        
     @qrurl = @msg
     @filename = Digest::MD5.hexdigest("#{@version}-#{@ecc}-#{@msg}")
     @imgurl = "#{@createurl}?version=#{@version}&ecc=#{@ecc}&msg=#{@qrurl}"
@@ -36,6 +37,7 @@ class QrcodeController < ApplicationController
     @version = params[:version].nil? ? 6 : params[:version].to_i
     @ecc = params[:ecc].to_sym rescue :q
     @msg = params[:msg]
+    session[:msg] = @msg
     
     @qrurl = @msg
     @filename = Digest::MD5.hexdigest("#{@version}-#{@ecc}-#{@msg}")
@@ -48,7 +50,7 @@ class QrcodeController < ApplicationController
   
   def help
     @advance = params[:advance]
-    @msg = params[:msg]
+    @msg = params[:msg] || session[:msg]   
   end
 
   protected
