@@ -59,7 +59,7 @@ class QrcodeController < ApplicationController
       @qrurl = url_for(:only_path => false, :controller => :qrcode, :action => :help)
       @advance = true 
       @imgurl = "#{@createurl}?msg=#{@qrurl}"
-      @qrurl = @imgurl
+      @qrurl = "http://qrcode.heroku.com/images/qrcode/9271e16d2c908cfcac4c426629b88fee.png"
     end
 
     def qrcode_err(exception)
