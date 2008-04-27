@@ -18,7 +18,7 @@ class QrcodeController < ApplicationController
     fullpath = "#{QRCODE_BASE_PATH}/#{@filename}.png"      
     unless File.exists?(fullpath)
       qrcode = RQRCode::QRCode.new(@msg, :size => @version, :level => @ecc)
-      qrcode.save_as_png(fullpath, 4)
+      qrcode.save_as(fullpath, 4)
     end  
           
     if request.xhr?

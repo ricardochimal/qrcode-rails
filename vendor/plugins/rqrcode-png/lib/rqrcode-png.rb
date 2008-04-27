@@ -3,7 +3,7 @@ require 'rqrcode'
 
 module RQRCode
   class QRCode
-    def save_as_png(filename, module_size = 4)
+    def save_as(filename, module_size = 4)
       length = self.modules.size
       width = module_size * length
       dx = module_size * 4
