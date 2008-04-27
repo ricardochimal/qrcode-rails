@@ -9,49 +9,53 @@
  *   #footer
  */
 body {
-	text-align: center;
-	margin: 0; padding: 1em; 
+  text-align: center;
+  margin: 0; padding: 1em; 
 }
 
 #container {
-	width: 740px;
-	text-align: left; 
-	margin: 0 auto; padding: 0;
+  width: 740px;
+  text-align: left; 
+  margin: 0 auto; padding: 0;
 }
 
 #header {
-	height: 60px; 
-	margin: 0 0 15px; padding: 0;
+  height: 60px; 
+  margin: 0 0 15px; padding: 0;
 }
 
 #page {}
 
 #content {
-	width: 400px;
+  width: 400px;
 }
 
 #sidebar {
-	width: 300px;
+  width: 300px;
+}
+
+div#suggestion{
+  padding-bottom: 30px;
 }
 
 #footer {
-	height: 40px; 
-	margin: 10px 0 0; padding: 10px 0 0;
-	clear:both; 
+  height: 40px; 
+  margin: 10px 0 0; padding: 10px 0 0;
+  clear:both; 
 }
 
 .error {
-	color: red;
+  color: red;
 }
 
 div.error {
-	border-left: red solid 10px;
-	padding: 10px;
+  border-left: red solid 10px;
+  padding: 10px;
 }
 
 p#bm_link {
-	padding-left: 20px;
-	font-size: 20px;
+  padding-left: 20px;
+  font-size: 20px;
 }
 
 /*--------------------------------------------------------------
@@ -60,25 +64,25 @@ p#bm_link {
 
 /* BEGIN: Right Sidebar */
 #sidebar {
-	float: right; text-align: left;
-	padding-left: 15px; 
-	border-left: 1px dotted #ddd; 
+  float: right; text-align: left;
+  padding-left: 15px; 
+  border-left: 1px dotted #ddd; 
 }
 #content {
-	float: left;
-	padding-left: 5px; 
+  float: left;
+  padding-left: 5px; 
 }
 /* END: Right Sidebar */
 
 
 /* BEGIN: Left Sidebar
 #sidebar {
-	float: left; text-align: right;
-	padding-right: 20px; 
-	border-right: 1px dotted #ddd; 
+  float: left; text-align: right;
+  padding-right: 20px; 
+  border-right: 1px dotted #ddd; 
 }
 
 #content {
-	float: right; text-align: left;
+  float: right; text-align: left;
 }
 /* END: Left Sidebar */
