@@ -4,6 +4,16 @@ require 'rqrcode'
 module RQRCode
   class QRCode
     def save_as(filename, module_size = 4)
+      canvas = draw(module_size)
+	  canvas.write(filename)
+    end
+
+    def to_s(module_size = 4)
+      canvas = draw(module_size)
+      canvas.to_blob
+    end
+
+    def draw(module_size = 4)
       length = self.modules.size
       width = module_size * length
       dx = module_size * 4
@@ -28,7 +38,7 @@ module RQRCode
         col_cnt += 1
       }
       gc.draw(canvas)
-      canvas.write(filename)
+      canvas
     end
   end
 end
