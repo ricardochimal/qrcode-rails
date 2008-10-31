@@ -1,35 +1,29 @@
 class QrcodeController < ApplicationController
-  QRCODE_BASE_URL = '/images/qrcode'
-  QRCODE_BASE_PATH = "#{RAILS_ROOT}/public#{QRCODE_BASE_URL}"
+  session :off, :only => [ :image ]
+
   before_filter :default_qrurl
   rescue_from RQRCode::QRCodeRunTimeError, :with => :qrcode_err
     
-  def create    
-    @version = params[:version].nil? ? 6 : params[:version].to_i
-    @ecc = params[:ecc].to_sym rescue :q
-    @msg = params[:msg]
+  def create
     @advance = params[:advance]
     session[:msg] = @msg
-        
-    @qrurl = @msg
-    @filename = Digest::MD5.hexdigest("#{@version}-#{@ecc}-#{@msg}")
-    @imgurl = "#{@createurl}?version=#{@version}&ecc=#{@ecc}&msg=#{@qrurl}"
-    @qrurl = "#{request.protocol}#{request.host}#{request.relative_url_root}#{QRCODE_BASE_URL}/#{@filename}.png"
-    fullpath = "#{QRCODE_BASE_PATH}/#{@filename}.png"      
-    unless File.exists?(fullpath)
-      qrcode = RQRCode::QRCode.new(@msg, :size => @version, :level => @ecc)
-      qrcode.save_as(fullpath, 4)
-    end  
-          
+
+    @qrimage = QRImage.find_or_create(params)
+
     if request.xhr?
+      @imgurl = "#{@createurl}?version=#{@qrimage.version}&ecc=#{@qrimage.ecc}&msg=#{@qrimage.message}"
+      @qrurl = url_for(:action => :image, :md5 => @qrimage.md5)
+
       render :update do |page|
         page.replace_html  'qrcode', :partial => 'qrcode/qrcode', :locals => {:qrurl => @qrurl, :imgurl => @imgurl}
         page.visual_effect :highlight, 'qrcode'
       end
-    else  
-      send_data File.open(fullpath).read, :filename => "#{@filename}.png", 
-                                          :disposition => 'inline', 
-                                          :type => "image/png"
+    else
+      if @qrimage
+        redirect_to :action => :image, :md5 => @qrimage.md5
+      else 
+        redirect_to @qrurl
+      end
     end
   end
   
@@ -38,11 +32,12 @@ class QrcodeController < ApplicationController
     @ecc = params[:ecc].to_sym rescue :q
     @msg = params[:msg]
     session[:msg] = @msg
-    
-    @qrurl = @msg
-    @filename = Digest::MD5.hexdigest("#{@version}-#{@ecc}-#{@msg}")
-    @imgurl = "#{@createurl}?version=#{@version}&ecc=#{@ecc}&msg=#{@msg}"
-    @qrurl = "#{request.protocol}#{request.host}#{request.relative_url_root}#{QRCODE_BASE_URL}/#{@filename}.png" 
+
+    @qrimage = QRImage.find_or_create(params)
+
+    @imgurl = "#{@createurl}?version=#{@qrimage.version}&ecc=#{@qrimage.ecc}&msg=#{@qrimage.message}"
+    @qrurl = url_for(:action => :image, :md5 => @qrimage.md5)
+
     @advance = true
     
     render :action => :help
@@ -50,16 +45,28 @@ class QrcodeController < ApplicationController
   
   def help
     @advance = params[:advance]
-    @msg = params[:msg] || session[:msg]   
+    @msg = params[:msg] || session[:msg]
+  end
+
+  def image
+    @qrimage = QRImage.find_by_md5(params[:md5])
+	if @qrimage
+      headers['Cache-Control'] = 'public; max-age=2592000' # cache image for a month
+      send_data @qrimage.data, :filename => @qrimage.filename, :disposition => 'inline', :type => "image/png"
+    else
+      render :nothing => true, :status => 404
+    end
   end
 
   protected
     def default_qrurl
       @createurl = url_for(:only_path => false, :controller => :qrcode, :action => :create)
-      @qrurl = url_for(:only_path => false, :controller => :qrcode, :action => :help)
       @advance = true 
-      @imgurl = "#{@createurl}?msg=#{@qrurl}"
-      @qrurl = "http://qrcode.heroku.com/images/qrcode/9271e16d2c908cfcac4c426629b88fee.png"
+	  @msg = url_for(:only_path => false, :controller => :qrcode, :action => :help)
+
+	  @default_qrimage = QRImage.find_or_create(:message => @msg)
+      @qrurl = url_for(:action => :image, :md5 => @default_qrimage.md5)
+	  @imgurl = @qrurl
     end
 
     def qrcode_err(exception)
