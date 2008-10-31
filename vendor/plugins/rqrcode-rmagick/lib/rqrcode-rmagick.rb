@@ -8,8 +8,9 @@ module RQRCode
 	  canvas.write(filename)
     end
 
-    def to_s(module_size = 4)
+    def to_s(module_size = 4, image_format = 'png')
       canvas = draw(module_size)
+      canvas.format = image_format
       canvas.to_blob
     end
 
